@@ -63,8 +63,8 @@ export class Dash0OperatorAddOn extends blueprints.HelmAddOn {
     ns.node.addDependency(externalSecrets);
     const store = cluster.addManifest('dash0-secret-store', {
       apiVersion: 'external-secrets.io/v1',
-      kind: 'SecretStore',
-      metadata: { name: 'aws-secrets-manager', namespace },
+      kind: 'ClusterSecretStore',
+      metadata: { name: 'dash0-aws-secrets-manager' },
       spec: {
         provider: {
           aws: {
@@ -82,7 +82,7 @@ export class Dash0OperatorAddOn extends blueprints.HelmAddOn {
       metadata: { name: K8S_SECRET, namespace },
       spec: {
         refreshInterval: '1h',
-        secretStoreRef: { name: 'aws-secrets-manager', kind: 'SecretStore' },
+        secretStoreRef: { name: 'dash0-aws-secrets-manager', kind: 'ClusterSecretStore' },
         target: { name: K8S_SECRET },
         data: [{ secretKey: 'token', remoteRef: { key: o.tokenSecretName, property: 'token' } }],
       },
