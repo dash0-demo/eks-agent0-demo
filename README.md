@@ -31,12 +31,12 @@ fills, `inventory` is OOMKilled, restarts, and `storefront` starts failing. Ask 
 
 ## Deploy
 
-Prerequisites: AWS credentials, Node.js 22+, a [CDK-bootstrapped](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) account and region.
+Prerequisites: AWS credentials (the cluster goes to `eu-west-2` by default, change it with `-c region=...`), Node.js 22+, a [CDK-bootstrapped](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) account and region.
 
 1. Create a Dash0 auth token and store it in AWS Secrets Manager:
 
    ```sh
-   aws secretsmanager create-secret --region eu-west-1 \
+   aws secretsmanager create-secret --region eu-west-2 \
      --name dash0/eks-agent0-demo --secret-string '{"token":"auth_..."}'
    ```
 

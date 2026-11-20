@@ -9,7 +9,7 @@ import { GitOpsAppAddOn } from '../lib/gitops-app-addon';
 const app = new cdk.App();
 const ctx = (key: string, fallback: string) => app.node.tryGetContext(key) ?? fallback;
 
-const region = ctx('region', 'eu-west-1');
+const region = ctx('region', 'eu-west-2');
 const dash0Region = ctx('dash0Region', 'eu-west-1');
 // Secrets Manager secret holding {"token": "auth_..."}: a Dash0 auth token for your organization.
 const dash0Token = cdk.SecretValue.secretsManager(ctx('dash0TokenSecret', 'dash0/eks-agent0-demo'), {
