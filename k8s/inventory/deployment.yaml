@@ -24,14 +24,16 @@ spec:
             - name: OTEL_SERVICE_NAME
               value: inventory
             # Stock report cache. Raised for the holiday sale.
+            # The cache lives in process memory, so the memory limit below must
+            # stay above CACHE_SIZE_MB plus ~100Mi for the Node.js runtime.
             - name: CACHE_SIZE_MB
               value: "512"
           resources:
             requests:
               cpu: 100m
-              memory: 128Mi
+              memory: 640Mi
             limits:
-              memory: 128Mi
+              memory: 768Mi
           readinessProbe:
             httpGet: { path: /healthz, port: 8080 }
           volumeMounts:
