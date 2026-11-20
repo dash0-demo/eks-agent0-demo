@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: shop
+resources:
+  - namespace.yaml
+  - dash0-monitoring.yaml
+  - inventory/deployment.yaml
+  - storefront/deployment.yaml
+  - loadgen.yaml
+configMapGenerator:
+  - name: inventory-code
+    files: [inventory/server.js]
+  - name: storefront-code
+    files: [storefront/server.js]

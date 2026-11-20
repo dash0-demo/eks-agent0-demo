@@ -1,0 +1,25 @@
+# Simulated shoppers: two product page views per second.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  labels: { app: loadgen }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: loadgen }
+  template:
+    metadata:
+      labels:
+        app: loadgen
+        dash0.com/enable: "false"
+    spec:
+      containers:
+        - name: loadgen
+          image: curlimages/curl:8.11.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - while true; do curl -s -o /dev/null -w "%{http_code}\n" http://storefront:8080/products; sleep 0.5; done
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits: { memory: 32Mi }
