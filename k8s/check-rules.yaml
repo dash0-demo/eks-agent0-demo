@@ -1,0 +1,20 @@
+# Synced to Dash0 as a check rule by the Dash0 operator.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: storefront-errors
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  groups:
+    - name: shop
+      interval: 1m
+      rules:
+        - alert: storefront error rate
+          expr: (sum by (service_namespace, service_name) (increase({otel_metric_name = "dash0.spans", service_name = "storefront", service_namespace = "shop", dash0_operation_name != "", otel_span_status_code = "ERROR"}[5m]))) / (sum by (service_namespace, service_name) (increase({otel_metric_name = "dash0.spans", service_name = "storefront", service_namespace = "shop", dash0_operation_name != ""}[5m])) > 0) * 100 > $__threshold
+          for: 0s
+          annotations:
+            summary: 'storefront is failing {{$value|printf "%.1f"}}% of requests'
+            description: 'More than {{ $threshold }}% of storefront requests are failing.'
+            dash0-threshold-degraded: "1"
+            dash0-threshold-critical: "5"
