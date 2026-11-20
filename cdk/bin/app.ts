@@ -6,6 +6,7 @@ import * as blueprints from '@aws-quickstart/eks-blueprints';
 import { Dash0OperatorAddOn } from '../lib/dash0-operator-addon';
 import { GitOpsAppAddOn } from '../lib/gitops-app-addon';
 
+blueprints.utils.logger.settings.minLevel = 3; // hide debug output
 const app = new cdk.App();
 const ctx = (key: string, fallback: string) => app.node.tryGetContext(key) ?? fallback;
 
