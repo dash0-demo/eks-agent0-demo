@@ -12,10 +12,8 @@ const ctx = (key: string, fallback: string) => app.node.tryGetContext(key) ?? fa
 
 const region = ctx('region', 'eu-west-2');
 const dash0Region = ctx('dash0Region', 'eu-west-1');
-// Secrets Manager secret holding {"token": "auth_..."}: a Dash0 auth token for your organization.
-const dash0Token = cdk.SecretValue.secretsManager(ctx('dash0TokenSecret', 'dash0/eks-agent0-demo'), {
-  jsonField: 'token',
-}).unsafeUnwrap();
+// Secrets Manager secret (in the cluster's region) holding {"token": "auth_..."}: a Dash0 auth token.
+const dash0TokenSecret = ctx('dash0TokenSecret', 'dash0/eks-agent0-demo');
 
 blueprints.EksBlueprint.builder()
   .account(process.env.CDK_DEFAULT_ACCOUNT)
@@ -36,11 +34,13 @@ blueprints.EksBlueprint.builder()
     new blueprints.addons.CoreDnsAddOn(),
     new blueprints.addons.KubeProxyAddOn(),
     new blueprints.addons.ArgoCDAddOn(),
+    // Syncs the Dash0 token from AWS Secrets Manager into the cluster.
+    new blueprints.addons.ExternalsSecretsAddOn(),
     // The Dash0 operator, installed as an add-on when the cluster is created.
     new Dash0OperatorAddOn({
       ingressEndpoint: ctx('dash0Ingress', `ingress.${dash0Region}.aws.dash0.com:4317`),
       apiEndpoint: ctx('dash0Api', `https://api.${dash0Region}.aws.dash0.com`),
-      token: dash0Token,
+      tokenSecretName: dash0TokenSecret,
       clusterName: 'eks-agent0-demo',
       agent0Connector: {
         serverAddress: ctx('dash0OutboundConnector', `outbound-connector.${dash0Region}.aws.dash0.com:443`),
