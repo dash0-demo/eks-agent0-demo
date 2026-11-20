@@ -15,6 +15,6 @@ spec:
           for: 0s
           annotations:
             summary: 'storefront is failing {{$value|printf "%.1f"}}% of requests'
-            description: 'More than {{ $threshold }}% of storefront requests are failing.'
+            description: 'storefront requests are failing because a dependency is unavailable or erroring.'
             dash0-threshold-degraded: "1"
             dash0-threshold-critical: "5"
